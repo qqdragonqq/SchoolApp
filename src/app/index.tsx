@@ -14,7 +14,6 @@ function TaskBox(props: taskBoxProps){
     </Pressable>
   )
 }
-
 function AddButton(props: {onPress: () => void}){
   return(
     <Pressable style = {globalStyle.AddButton} 
@@ -24,19 +23,21 @@ function AddButton(props: {onPress: () => void}){
   )
 }
 
+
 type overlayProps={
   visible: boolean, 
   setVisibility: () => void,
-  onChangeText: (task: string) => void
+  onChangeText: (task: string) => void,
+  currentTask: string
 }
 function Overlay(props: overlayProps){
 
-const [inputTask, setInputTask]=useState("")
+  const [inputTask, setInputTask]=useState("")
 
-function submitTask(){
-  props.setVisibility()
-  props.onChangeText(inputTask)
-}
+  function submitTask(){
+    props.setVisibility()
+    props.onChangeText(inputTask)
+  }
 
   return(
     <Modal
@@ -45,9 +46,16 @@ function submitTask(){
     >
       <View style={globalStyle.overlayDarkBg}>
         <View style={globalStyle.overlay}>
-          <TextInput
+          <Pressable style={globalStyle.xBtn}
+          onPress={() => props.setVisibility()}>
+            <Text style={globalStyle.xText}>X</Text>
+          </Pressable>
+          <TextInput style={globalStyle.overlayInput}
           onChangeText={task => setInputTask(task)}
           onSubmitEditing={() => submitTask()}
+          defaultValue={props.currentTask}
+          multiline
+          autoFocus
           ></TextInput>
           <Button title="Ok" onPress={() => submitTask()}></Button>
         </View>
@@ -55,6 +63,7 @@ function submitTask(){
     </Modal>
   )
 }
+
 
 export default function Main() {
 
@@ -72,6 +81,7 @@ export default function Main() {
       visible={visible} 
       setVisibility={() => setVisibility(false)}
       onChangeText={changeTask}
+      currentTask={task}
       />
     </View>
   );

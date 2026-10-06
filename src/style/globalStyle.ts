@@ -19,7 +19,7 @@ export const globalStyle = StyleSheet.create({
         borderRadius: 100,
         width: 75,
         height: 75,
-        backgroundColor: "#238029",
+        backgroundColor: "#38c442",
         alignSelf: "flex-end",
         marginTop: "auto",
         margin: 25,
@@ -28,15 +28,31 @@ export const globalStyle = StyleSheet.create({
     AddbuttonText: {
         fontSize: 50,
         alignSelf: "center",
-        color: "#40fcffd2"
+        color: "#334546d2"
     },
     overlayDarkBg: {
-        backgroundColor:"#ffffff50",
+        backgroundColor:"#1c1c1ca0",
         flex: 1,
         justifyContent: "center",
         alignItems: "center"
     },
     overlay: {
-        backgroundColor: "#ffff"
+        backgroundColor: "#bdbdbd",
+        width: 300,
+        padding: 15
+    },
+    overlayInput: {
+        width: "auto",
+        fontSize: 20,
+        backgroundColor: "#ffff",
+        overflowY: "scroll"
+    },
+    xBtn: {
+        alignSelf: "flex-end",
+        marginBottom: 15
+    },
+    xText: {
+        fontSize: 25,
+        color: "#ff0000"
     }
 })
