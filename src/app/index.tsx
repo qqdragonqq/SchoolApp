@@ -1,19 +1,21 @@
 import { globalStyle } from "@/style/globalStyle";
 import { useState } from "react";
-import { Button, Modal, Pressable, Text, TextInput, View } from "react-native";
+import { Button, FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
 
 type taskBoxProps={
-  task: string,
+  input: string,
   onPress: () => void
 }
 function TaskBox(props: taskBoxProps){
   return(
     <Pressable style={globalStyle.TaskBox}
     onPress={props.onPress}>
-      <Text>{props.task}</Text>
+      <Text>{props.input}</Text>
     </Pressable>
   )
 }
+
+
 function AddButton(props: {onPress: () => void}){
   return(
     <Pressable style = {globalStyle.AddButton} 
@@ -27,16 +29,16 @@ function AddButton(props: {onPress: () => void}){
 type overlayProps={
   visible: boolean, 
   setVisibility: () => void,
-  onChangeText: (task: string) => void,
-  currentTask: string
+  currentTask: string,
+  onSubmit: (task: string) => void
 }
 function Overlay(props: overlayProps){
 
   const [inputTask, setInputTask]=useState("")
 
-  function submitTask(){
+  function submitTask(task: string){
     props.setVisibility()
-    props.onChangeText(inputTask)
+    props.onSubmit(task)
   }
 
   return(
@@ -52,12 +54,10 @@ function Overlay(props: overlayProps){
           </Pressable>
           <TextInput style={globalStyle.overlayInput}
           onChangeText={task => setInputTask(task)}
-          onSubmitEditing={() => submitTask()}
           defaultValue={props.currentTask}
-          multiline
           autoFocus
           ></TextInput>
-          <Button title="Ok" onPress={() => submitTask()}></Button>
+          <Button title="Ok" onPress={() => submitTask(inputTask)}></Button>
         </View>
       </View>
     </Modal>
@@ -65,24 +65,46 @@ function Overlay(props: overlayProps){
 }
 
 
+
+
 export default function Main() {
 
   const [visible, setVisibility]=useState(false)
-  const [task, changeTask]=useState('')
+  const [input, changeInput]=useState('')
+  const [taskSelected, setTaskSelec]=useState('')
+  const [data, setData]=useState([
+    { id: '1', title: 'Apples' },
+    { id: '2', title: 'Bananas' },
+    { id: '3', title: 'Cherries' },
+  ])
 
   return (
     <View style={globalStyle.Background}>
-      <TaskBox 
-      task={task}
-      onPress={() => setVisibility(true)}
-      />
-      <AddButton onPress={() => setVisibility(true)}/>
       <Overlay 
-      visible={visible} 
-      setVisibility={() => setVisibility(false)}
-      onChangeText={changeTask}
-      currentTask={task}
+        visible={visible} 
+        setVisibility={() => setVisibility(false)}
+        currentTask={taskSelected}
+        onSubmit={(input) => setData(prev => [...prev, 
+          {id: Date.now().toString(), title: input}])}
       />
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id}
+        renderItem={(item) => (        
+          <TaskBox 
+            input={item.item.title}
+            onPress={() => {
+              setVisibility(true)
+              setTaskSelec(item.item.title)
+            }}
+            />
+        )
+        }>
+      </FlatList>
+      <AddButton onPress={() => {
+        setVisibility(true)
+        setTaskSelec("")
+        }}/>
     </View>
   );
 }

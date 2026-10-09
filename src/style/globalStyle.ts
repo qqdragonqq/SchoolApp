@@ -13,7 +13,8 @@ export const globalStyle = StyleSheet.create({
         padding: 10,
         borderRadius: 20,
         width: taskBoxSize*2,
-        height: taskBoxSize
+        height: taskBoxSize,
+        margin: 10
     },
     AddButton: {
         borderRadius: 100,
