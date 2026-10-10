@@ -70,7 +70,6 @@ function Overlay(props: overlayProps){
 export default function Main() {
 
   const [visible, setVisibility]=useState(false)
-  const [input, changeInput]=useState('')
   const [taskSelected, setTaskSelec]=useState('')
   const [data, setData]=useState([
     { id: '1', title: 'Apples' },
@@ -84,8 +83,14 @@ export default function Main() {
         visible={visible} 
         setVisibility={() => setVisibility(false)}
         currentTask={taskSelected}
-        onSubmit={(input) => setData(prev => [...prev, 
-          {id: Date.now().toString(), title: input}])}
+        onSubmit={(input) => {
+          if (taskSelected===""){
+            setData(prev => [...prev, {id: Date.now().toString(), title: input}])
+          }
+          else{
+            setData(prev => prev.map(data => data.title===taskSelected ? {...data, title: input} :data))
+          }
+        }}
       />
       <FlatList
         data={data}
