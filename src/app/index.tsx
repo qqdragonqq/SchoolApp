@@ -39,6 +39,7 @@ function Overlay(props: overlayProps){
   function submitTask(task: string){
     props.setVisibility()
     props.onSubmit(task)
+    setInputTask("")
   }
 
   return(
@@ -53,7 +54,7 @@ function Overlay(props: overlayProps){
             <Text style={globalStyle.xText}>X</Text>
           </Pressable>
           <TextInput style={globalStyle.overlayInput}
-          onChangeText={task => setInputTask(task)}
+          onChangeText={task => setInputTask(task.trim())}
           defaultValue={props.currentTask}
           autoFocus
           ></TextInput>
@@ -70,7 +71,12 @@ function Overlay(props: overlayProps){
 export default function Main() {
 
   const [visible, setVisibility]=useState(false)
-  const [taskSelected, setTaskSelec]=useState('')
+  const [taskSelected, setTaskSelec]=useState({
+    id: "",
+    title: "",
+    details: "",
+    dueDate: ""
+  })
   const [data, setData]=useState([
     { id: '1', title: 'Apples' },
     { id: '2', title: 'Bananas' },
@@ -82,13 +88,13 @@ export default function Main() {
       <Overlay 
         visible={visible} 
         setVisibility={() => setVisibility(false)}
-        currentTask={taskSelected}
+        currentTask={taskSelected.title}
         onSubmit={(input) => {
-          if (taskSelected===""){
+          if (taskSelected.id===""){
             setData(prev => [...prev, {id: Date.now().toString(), title: input}])
           }
           else{
-            setData(prev => prev.map(data => data.title===taskSelected ? {...data, title: input} :data))
+            setData(prev => prev.map(data => data.id===taskSelected.id ? {...data, title: input} :data))
           }
         }}
       />
@@ -100,7 +106,13 @@ export default function Main() {
             input={item.item.title}
             onPress={() => {
               setVisibility(true)
-              setTaskSelec(item.item.title)
+              setTaskSelec(prev => (
+                {
+                  ...prev,
+                  id: item.item.id,
+                  title: item.item.title
+                }
+              ))
             }}
             />
         )
@@ -108,7 +120,12 @@ export default function Main() {
       </FlatList>
       <AddButton onPress={() => {
         setVisibility(true)
-        setTaskSelec("")
+        setTaskSelec({
+            id: "",
+            title: "",
+            details: "",
+            dueDate: ""
+          })
         }}/>
     </View>
   );
