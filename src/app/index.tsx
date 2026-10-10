@@ -38,8 +38,10 @@ function Overlay(props: overlayProps){
 
   function submitTask(task: string){
     props.setVisibility()
-    props.onSubmit(task)
     setInputTask("")
+    if (task !== ""){
+      props.onSubmit(task)
+    }
   }
 
   return(
