@@ -1,26 +1,35 @@
 import { StyleSheet } from "react-native";
 
-const taskBoxSize=175
+
+const overlayInput=275
+
 
 export const globalStyle = StyleSheet.create({
     Background: {
-        backgroundColor: "#00014d",
+        backgroundColor: "#6365da",
         flex: 1,
         alignItems:"center"
     },
     TaskBox: {
-        backgroundColor: "#ffff",
+        backgroundColor: "#ebebeb",
         padding: 10,
         borderRadius: 20,
-        width: taskBoxSize*2,
-        height: taskBoxSize,
+        width: 340,
+        height: 125,
         margin: 10
+    },
+    TaskBoxTitle: {
+        fontWeight: "bold",
+        fontSize: 30
+    },
+    TaskBoxDetails: {
+        marginTop: 10
     },
     AddButton: {
         borderRadius: 100,
         width: 75,
         height: 75,
-        backgroundColor: "#38c442",
+        backgroundColor: "#f7c664",
         alignSelf: "flex-end",
         marginTop: "auto",
         margin: 25,
@@ -29,7 +38,7 @@ export const globalStyle = StyleSheet.create({
     AddbuttonText: {
         fontSize: 50,
         alignSelf: "center",
-        color: "#334546d2"
+        color: "#8b2f0ad2"
     },
     overlayDarkBg: {
         backgroundColor:"#1c1c1ca0",
@@ -40,17 +49,29 @@ export const globalStyle = StyleSheet.create({
     overlay: {
         backgroundColor: "#bdbdbd",
         width: 300,
-        padding: 15
+        padding: 15,
+        alignItems: "center"
     },
-    overlayInput: {
-        width: "auto",
+    overlayTitleInput: {
+        width: overlayInput,
+        fontSize: 35,
+        backgroundColor: "#ffff",
+        overflowY: "scroll"
+    },
+    overlayDetailInput: {
+        margin: 5,
+        width: overlayInput,
         fontSize: 20,
         backgroundColor: "#ffff",
         overflowY: "scroll"
     },
     xBtn: {
         alignSelf: "flex-end",
-        marginBottom: 15
+        marginBottom: 15,
+        width: 35,
+        height: 35,
+        alignItems: "center",
+        justifyContent: "center"
     },
     xText: {
         fontSize: 25,

@@ -1,16 +1,17 @@
 import { globalStyle } from "@/style/globalStyle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
 
 type taskBoxProps={
-  input: string,
+  input: task,
   onPress: () => void
 }
 function TaskBox(props: taskBoxProps){
   return(
     <Pressable style={globalStyle.TaskBox}
     onPress={props.onPress}>
-      <Text>{props.input}</Text>
+      <Text style={globalStyle.TaskBoxTitle}>{props.input.title}</Text>
+      <Text style={globalStyle.TaskBoxDetails}>{props.input.details}</Text>
     </Pressable>
   )
 }
@@ -26,22 +27,31 @@ function AddButton(props: {onPress: () => void}){
 }
 
 
+
+type task={
+  title: string,
+  details: string,
+  dueDate: string
+}
 type overlayProps={
   visible: boolean, 
   setVisibility: () => void,
-  currentTask: string,
-  onSubmit: (task: string) => void
+  currentTask: task,
+  onSubmit: (task: task) => void
 }
 function Overlay(props: overlayProps){
 
-  const [inputTask, setInputTask]=useState("")
+  const [currentTask, changeCurrentTask]=useState(props.currentTask)
 
-  function submitTask(task: string){
-    props.setVisibility()
-    setInputTask("")
-    if (task !== ""){
-      props.onSubmit(task)
+  useEffect(() => {
+    if (props.visible) {
+      changeCurrentTask(props.currentTask)
     }
+  }, [props.visible, props.currentTask])
+
+  function submitTask(task: task){
+    props.setVisibility()
+    props.onSubmit(task)
   }
 
   return(
@@ -55,12 +65,18 @@ function Overlay(props: overlayProps){
           onPress={() => props.setVisibility()}>
             <Text style={globalStyle.xText}>X</Text>
           </Pressable>
-          <TextInput style={globalStyle.overlayInput}
-          onChangeText={task => setInputTask(task.trim())}
-          defaultValue={props.currentTask}
+          <TextInput style={globalStyle.overlayTitleInput}
+          onChangeText={title => changeCurrentTask(prev => ({...prev, title: title}))}
+          value={currentTask.title}
           autoFocus
+          placeholder="Title"
           ></TextInput>
-          <Button title="Ok" onPress={() => submitTask(inputTask)}></Button>
+          <TextInput style={globalStyle.overlayDetailInput}
+          placeholder="Details"
+          onChangeText={details => changeCurrentTask(prev => ({...prev, details: details}))}
+          value={currentTask.details}
+          ></TextInput>
+          <Button title="Ok" onPress={() => submitTask(currentTask)}></Button>
         </View>
       </View>
     </Modal>
@@ -72,17 +88,19 @@ function Overlay(props: overlayProps){
 
 export default function Main() {
 
-  const [visible, setVisibility]=useState(false)
-  const [taskSelected, setTaskSelec]=useState({
+  const emptyTaskDetails={
     id: "",
     title: "",
     details: "",
     dueDate: ""
-  })
+  }
+
+  const [visible, setVisibility]=useState(false)
+  const [taskSelected, setTaskSelec]=useState(emptyTaskDetails)
   const [data, setData]=useState([
-    { id: '1', title: 'Apples' },
-    { id: '2', title: 'Bananas' },
-    { id: '3', title: 'Cherries' },
+    { id: '1', title: 'Apples', details: "Buy it", dueDate:"" },
+    { id: '2', title: 'Bananas', details: "Buy it", dueDate:"" },
+    { id: '3', title: 'Cherries', details: "Buy it", dueDate: "" },
   ])
 
   return (
@@ -90,13 +108,13 @@ export default function Main() {
       <Overlay 
         visible={visible} 
         setVisibility={() => setVisibility(false)}
-        currentTask={taskSelected.title}
+        currentTask={taskSelected}
         onSubmit={(input) => {
           if (taskSelected.id===""){
-            setData(prev => [...prev, {id: Date.now().toString(), title: input}])
+            setData(prev => [...prev, {id: Date.now().toString(), title: input.title, details: input.details, dueDate: input.dueDate}])
           }
           else{
-            setData(prev => prev.map(data => data.id===taskSelected.id ? {...data, title: input} :data))
+            setData(prev => prev.map(data => data.id===taskSelected.id ? {...data, title: input.title, details: input.details} :data))
           }
         }}
       />
@@ -105,14 +123,15 @@ export default function Main() {
         keyExtractor={(item) => item.id}
         renderItem={(item) => (        
           <TaskBox 
-            input={item.item.title}
+            input={item.item}
             onPress={() => {
               setVisibility(true)
               setTaskSelec(prev => (
                 {
                   ...prev,
                   id: item.item.id,
-                  title: item.item.title
+                  title: item.item.title,
+                  details: item.item.details
                 }
               ))
             }}
@@ -122,12 +141,7 @@ export default function Main() {
       </FlatList>
       <AddButton onPress={() => {
         setVisibility(true)
-        setTaskSelec({
-            id: "",
-            title: "",
-            details: "",
-            dueDate: ""
-          })
+        setTaskSelec(emptyTaskDetails)
         }}/>
     </View>
   );
