@@ -63,15 +63,15 @@ function Overlay(props: overlayProps){
             <Text style={globalStyle.xText}>X</Text>
           </Pressable>
           <TextInput style={globalStyle.overlayTitleInput}
-          onChangeText={title => changeCurrentTask(prev => ({...prev, title: title}))}
-          value={currentTask.title}
+          onChangeText={title => changeCurrentTask(prev => ({...prev, title: title.trim()}))}
+          defaultValue={currentTask.title}
           autoFocus
           placeholder="Title"
           ></TextInput>
           <TextInput style={globalStyle.overlayDetailInput}
           placeholder="Details"
-          onChangeText={details => changeCurrentTask(prev => ({...prev, details: details}))}
-          value={currentTask.details ? currentTask.details : ""}
+          onChangeText={details => changeCurrentTask(prev => (details==="" ? {...prev, details: null} : {...prev, details: details.trim()}))}
+          defaultValue={currentTask.details ? currentTask.details : ""}
           ></TextInput>
           <Button title="Ok" onPress={() => submitTask(currentTask)}></Button>
         </View>
@@ -90,8 +90,8 @@ export default function Main() {
   const emptyTask={
     id: "",
     title: "",
-    details: "",
-    dueDate: "",
+    details: null,
+    dueDate: null,
     done: false,
   }
 
