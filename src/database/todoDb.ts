@@ -18,7 +18,7 @@ type TaskRow={  //this is the one that is going to be stored in database
 
 let db: SQLite.SQLiteDatabase | null=null
 
-export async function initDb(): Promise<void> {
+export async function initTaskDb(): Promise<void> {
   db = await SQLite.openDatabaseAsync('todos.db');
   await db.execAsync(`
     CREATE TABLE IF NOT EXISTS tasks (
@@ -31,7 +31,7 @@ export async function initDb(): Promise<void> {
   `);
 }
 
-export async function delDb(): Promise<void> {
+export async function delTaskDb(): Promise<void> {
     db=await SQLite.openDatabaseAsync("todos.db")
     await db.execAsync(`
         DROP TABLE IF EXISTS tasks
@@ -43,7 +43,7 @@ function getDb(): SQLite.SQLiteDatabase{
     return db
 }
 
-// Convert a raw database row into a clean Task object
+// Converts a raw database row into a clean Task object
 function toTask(row: TaskRow): Task {
   return {
     id: row.id,
@@ -60,7 +60,6 @@ export async function addTask(title: string, details: string | null=null, dueDat
         `INSERT INTO tasks (id, title, details, done, dueDate) VALUES (?, ?, ?, 0, ?)`,
         [id, title, details, dueDate]
     )
-    return id
 }
 
 export async function getAllTasks(): Promise<Task[]>{
